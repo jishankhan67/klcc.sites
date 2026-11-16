@@ -1,0 +1,124 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Existing User model (assumed to exist)
+model User {
+  id            Int          @id @default(autoincrement())
+  username      String       @unique
+  email         String       @unique
+  password      String
+  balance       Decimal      @default(0.00)
+  role          String       @default("user") // user, admin
+  refBy         Int?
+  status        Int          @default(1)
+  createdAt     DateTime     @default(now())
+  spinLogs      SpinLog[]
+  deposits      Deposit[]
+  withdrawals   Withdrawal[]
+  ptcViews      PtcView[]
+}
+
+// NEW: Spin Setting model
+model SpinSetting {
+  id          Int     @id @default(autoincrement())
+  title       String  
+  amount      Decimal @default(0.00)
+  probability Int     @default(10) // 1-100 chance %
+  status      Int     @default(1)  // 1=active, 0=inactive
+}
+
+// NEW: User Plan model
+model UserPlan {
+  id              Int     @id @default(autoincrement())
+  userId          Int
+  user            User    @relation(fields: [userId], references: [id])
+  planId          Int?
+  plan            Plan?   @relation(fields: [planId], references: [id])
+  status          String  // "active", "expired", "cancelled"
+  investedAmount  Decimal @default(0.00)
+  startedAt       DateTime @default(now())
+  expiresAt       DateTime?
+  dailyEarnings   Decimal @default(0.00)
+}
+
+// NEW: Plan model
+model Plan {
+  id          Int     @id @default(autoincrement())
+  name        String
+  price       Decimal
+  dailyLimit  Int
+  validity    Int     // days
+  status      String  // "active", "inactive"
+  tagline     String?
+}
+
+// NEW: User Earning model
+model UserEarning {
+  id             Int     @id @default(autoincrement())
+  userId         Int
+  user           User    @relation(fields: [userId], references: [id])
+  amount         Decimal
+  type           String   // "daily_task", "spin_reward", "bonus", "plan_investment"
+  referenceId    Int?
+  description    String
+  createdAt      DateTime @default(now())
+}
+
+// Existing models (assumed to exist)
+model Ptc {
+  id          Int       @id @default(autoincrement())
+  title       String
+  url         String
+  amount      Decimal   @default(0.01)
+  duration    Int       @default(15) // in seconds
+  maxShow     Int       @default(100)
+  showed      Int       @default(0)
+  status      Int       @default(1)
+  ptcViews    PtcView[]
+}
+
+model PtcView {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  ptcId     Int
+  ptc       Ptc      @relation(fields: [ptcId], references: [id])
+  viewDate  DateTime @default(now())
+}
+
+model SpinLog {
+  id       Int      @id @default(autoincrement())
+  userId   Int
+  user     User     @relation(fields: [userId], references: [id])
+  amount   Decimal
+  spinDate DateTime @default(now())
+}
+
+model Deposit {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  gateway     String   // 'duitnow', 'fpx', 'tng'
+  amount      Decimal
+  trx         String   @unique
+  billCode    String?
+  status      Int      @default(0) // 0: Pending, 1: Success
+  createdAt   DateTime @default(now())
+}
+
+model Withdrawal {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  amount    Decimal
+  method    String
+  details   String
+  status    Int      @default(0) // 0: Pending, 1: Approved
+  createdAt DateTime @default(now())
+}

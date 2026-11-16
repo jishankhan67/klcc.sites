@@ -1,0 +1,10 @@
+{
+  "name": "ai-project",
+  "version": "1.0.0",
+  "description": "Full-stack AI project with Node.js, React, Supabase, and Gemini AI",
+  "private": true,
+  "workspaces": [
+    "server",
+    "client"
+  ]
+}
