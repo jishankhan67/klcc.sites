@@ -8,9 +8,3 @@
     "client"
   ]
 }
-```[cite: 2]
-
-
-   git add .
-   git commit -m "Fix root package.json JSON syntax error"
-   git push origin main
