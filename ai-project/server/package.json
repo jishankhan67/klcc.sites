@@ -1,5 +1,4 @@
-{
-  "name": "ai-project-server",
+{"name": "ai-project-server",
   "version": "1.0.0",
   "description": "Full-stack AI project backend with Node.js, Express, Supabase, and Gemini AI",
   "main": "dist/index.js",
@@ -33,6 +32,40 @@
     "typescript": "^5.3.0"
   }
 }
+
+
+{
+  "name": "ai-project",
+  "version": "1.0.0",
+  "description": "Full-stack AI project with Node.js, React, Supabase, and Gemini AI",
+  "private": true,
+  "workspaces": [
+    "server",
+    "client"
+  ]
+}
+```[cite: 2]
+
+### Ki vabe thik korben:
+1. Apnar local project-er root level-er `ai-project/package.json` file-ti open korun.
+2. Purono shob code muche fele uporer code-ti copy kore paste korun ebong save din (khyal rakhben jate `}` er pore extra kono character ba text na thake).
+3. Tarpor GitHub-e push kore din:
+   ```powershell
+   git add .
+   git commit -m "Fix root package.json JSON syntax error"
+   git push origin main
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
